@@ -52,7 +52,11 @@
 #include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "usbd_cdc_if.h"
+#include <string.h>
+#include <stdarg.h>
+#include "font.h"
+#include "lcd-tft.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
