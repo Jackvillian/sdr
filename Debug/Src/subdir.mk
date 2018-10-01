@@ -10,6 +10,7 @@ C_SRCS += \
 ../Src/stm32f1xx_hal_msp.c \
 ../Src/stm32f1xx_it.c \
 ../Src/system_stm32f1xx.c \
+../Src/touchscreen.c \
 ../Src/usb_device.c \
 ../Src/usbd_cdc_if.c \
 ../Src/usbd_conf.c \
@@ -22,6 +23,7 @@ OBJS += \
 ./Src/stm32f1xx_hal_msp.o \
 ./Src/stm32f1xx_it.o \
 ./Src/system_stm32f1xx.o \
+./Src/touchscreen.o \
 ./Src/usb_device.o \
 ./Src/usbd_cdc_if.o \
 ./Src/usbd_conf.o \
@@ -34,6 +36,7 @@ C_DEPS += \
 ./Src/stm32f1xx_hal_msp.d \
 ./Src/stm32f1xx_it.d \
 ./Src/system_stm32f1xx.d \
+./Src/touchscreen.d \
 ./Src/usb_device.d \
 ./Src/usbd_cdc_if.d \
 ./Src/usbd_conf.d \

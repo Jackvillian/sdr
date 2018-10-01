@@ -25,6 +25,7 @@
 "Src/stm32f1xx_hal_msp.o"
 "Src/stm32f1xx_it.o"
 "Src/system_stm32f1xx.o"
+"Src/touchscreen.o"
 "Src/usb_device.o"
 "Src/usbd_cdc_if.o"
 "Src/usbd_conf.o"

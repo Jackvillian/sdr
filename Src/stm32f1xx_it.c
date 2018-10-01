@@ -41,6 +41,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_FS;
+extern SPI_HandleTypeDef hspi2;
 
 /******************************************************************************/
 /*            Cortex-M3 Processor Interruption and Exception Handlers         */ 
@@ -194,20 +195,6 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-* @brief This function handles USB high priority or CAN TX interrupts.
-*/
-void USB_HP_CAN1_TX_IRQHandler(void)
-{
-  /* USER CODE BEGIN USB_HP_CAN1_TX_IRQn 0 */
-
-  /* USER CODE END USB_HP_CAN1_TX_IRQn 0 */
-  HAL_PCD_IRQHandler(&hpcd_USB_FS);
-  /* USER CODE BEGIN USB_HP_CAN1_TX_IRQn 1 */
-
-  /* USER CODE END USB_HP_CAN1_TX_IRQn 1 */
-}
-
-/**
 * @brief This function handles USB low priority or CAN RX0 interrupts.
 */
 void USB_LP_CAN1_RX0_IRQHandler(void)
@@ -219,6 +206,20 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
   /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
 
   /* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
+}
+
+/**
+* @brief This function handles SPI2 global interrupt.
+*/
+void SPI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI2_IRQn 0 */
+
+  /* USER CODE END SPI2_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi2);
+  /* USER CODE BEGIN SPI2_IRQn 1 */
+
+  /* USER CODE END SPI2_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

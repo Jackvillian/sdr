@@ -8,10 +8,22 @@
 #include "stm32f1xx_hal.h"
 #include "lcd-tft.h"
 #include "stm32f1xx_hal_spi.h"
-SPI_HandleTypeDef hspi2;
+static void ILI9341_Select() {
+    HAL_GPIO_WritePin(TFT_CS_PORT, TFT_CS_PIN, GPIO_PIN_RESET);
+}
+
+void ILI9341_Unselect() {
+    HAL_GPIO_WritePin(TFT_CS_PORT, TFT_CS_PIN, GPIO_PIN_SET);
+}
+
+static void ILI9341_Reset() {
+    HAL_GPIO_WritePin(TFT_RESET_PORT, TFT_RESET_PIN, GPIO_PIN_RESET);
+    HAL_Delay(5);
+    HAL_GPIO_WritePin(TFT_RESET_PORT, TFT_RESET_PIN, GPIO_PIN_SET);
+}
 static void ILI9341_WriteCommand(uint8_t cmd) {
     HAL_GPIO_WritePin(TFT_DC_PORT, TFT_DC_PIN, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&hspi2, &cmd, sizeof(cmd), HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&ILI9341_SPI_PORT, &cmd, sizeof(cmd), HAL_MAX_DELAY);
 }
 static void ILI9341_WriteData(uint8_t* buff, size_t buff_size) {
     HAL_GPIO_WritePin(TFT_DC_PORT, TFT_DC_PIN, GPIO_PIN_SET);
@@ -19,7 +31,7 @@ static void ILI9341_WriteData(uint8_t* buff, size_t buff_size) {
     // split data in small chunks because HAL can't send more then 64K at once
     while(buff_size > 0) {
         uint16_t chunk_size = buff_size > 32768 ? 32768 : buff_size;
-        HAL_SPI_Transmit(&hspi2, buff, chunk_size, HAL_MAX_DELAY);
+        HAL_SPI_Transmit(&ILI9341_SPI_PORT, buff, chunk_size, HAL_MAX_DELAY);
         buff += chunk_size;
         buff_size -= chunk_size;
     }
@@ -267,7 +279,7 @@ void ILI9341_FillRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint1
     HAL_GPIO_WritePin(TFT_DC_PORT, TFT_DC_PIN, GPIO_PIN_SET);
     for(y = h; y > 0; y--) {
         for(x = w; x > 0; x--) {
-            HAL_SPI_Transmit(&hspi2, data, sizeof(data), HAL_MAX_DELAY);
+            HAL_SPI_Transmit(&ILI9341_SPI_PORT, data, sizeof(data), HAL_MAX_DELAY);
         }
     }
 
