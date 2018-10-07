@@ -16,25 +16,21 @@
 #define ILI9341_TOUCH_SPI_PORT hspi1
 extern SPI_HandleTypeDef ILI9341_TOUCH_SPI_PORT;
 
-#define ILI9341_TOUCH_IRQ_Pin       GPIO_PIN_5 // Arduino D5
+#define ILI9341_TOUCH_IRQ_Pin       GPIO_PIN_5
 #define ILI9341_TOUCH_IRQ_GPIO_Port GPIOC
-#define ILI9341_TOUCH_CS_Pin        GPIO_PIN_4 // Arduino D2
+#define ILI9341_TOUCH_CS_Pin        GPIO_PIN_4
 #define ILI9341_TOUCH_CS_GPIO_Port  GPIOC
 
 // change depending on screen orientation
-#define ILI9341_TOUCH_SCALE_X 240
-#define ILI9341_TOUCH_SCALE_Y 320
+#define ILI9341_TOUCH_SCALE_X 320
+#define ILI9341_TOUCH_SCALE_Y 240
 
-// to calibrate uncomment UART_Printf line in ili9341_touch.c
-#define ILI9341_TOUCH_MIN_RAW_X 1500
-#define ILI9341_TOUCH_MAX_RAW_X 31000
-#define ILI9341_TOUCH_MIN_RAW_Y 3276
-#define ILI9341_TOUCH_MAX_RAW_Y 30110
 
 // call before initializing any SPI devices
 void ILI9341_TouchUnselect();
-
+void ILI9341_TouchSelect();
+void ILI9341_TouchInit();
 bool ILI9341_TouchPressed();
-bool ILI9341_TouchGetCoordinates(uint16_t* x, uint16_t* y);
-
+uint16_t ILI9341_TouchGetX();
+uint16_t ILI9341_TouchGetY();
 #endif /* TOUCHSCREEN_H_ */

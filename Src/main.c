@@ -52,12 +52,12 @@
 #include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
-//#include "usbd_cdc_if.h"
+#include "usbd_cdc_if.h"
 #include <string.h>
 #include <stdarg.h>
+#include <testimg.h>
 #include "font.h"
 #include "lcd-tft.h"
-#include "testimg.h"
 #include "touchscreen.h"
 /* USER CODE END Includes */
 
@@ -76,8 +76,8 @@ TIM_HandleTypeDef htim4;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM4_Init(void);
-static void MX_SPI2_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_SPI2_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -85,23 +85,14 @@ static void MX_SPI1_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-void init() {
+void ILI9341_ALL_Init() {
      ILI9341_Unselect();
-     ILI9341_TouchUnselect();
      ILI9341_Init();
+     //ILI9341_TouchSelect();
+     //ILI9341_TouchInit();
+     //ILI9341_TouchUnselect();
  }
 void loop() {
-   /// if(HAL_SPI_DeInit(&hspi1) != HAL_OK) {
-   ///     UART_Printf("HAL_SPI_DeInit failed!\r\n");
- ///       return;
- //   }
-
- ///   hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
-
-///    if(HAL_SPI_Init(&hspi1) != HAL_OK) {
- ///       UART_Printf("HAL_SPI_Init failed!\r\n");
-  //      return;
-  //  }
 
     // Check border
     ILI9341_FillScreen(ILI9341_BLACK);
@@ -116,7 +107,7 @@ void loop() {
         ILI9341_DrawPixel(ILI9341_WIDTH-1, y, ILI9341_RED);
     }
 
-    HAL_Delay(3000);
+    HAL_Delay(500);
 
     // Check fonts
     ILI9341_FillScreen(ILI9341_BLACK);
@@ -124,76 +115,58 @@ void loop() {
     ILI9341_WriteString(0, 3*10, "Font_11x18, KISYA hello how are you?", Font_11x18, ILI9341_GREEN, ILI9341_BLACK);
     ILI9341_WriteString(0, 3*10+3*18, "Font_16x26,KISYA hello how are you?", Font_16x26, ILI9341_BLUE, ILI9341_BLACK);
 
-    HAL_Delay(1000);
+    HAL_Delay(100);
     ILI9341_InvertColors(true);
-    HAL_Delay(1000);
+    HAL_Delay(100);
     ILI9341_InvertColors(false);
 
-    HAL_Delay(5000);
+    HAL_Delay(100);
 
     // Check colors
     ILI9341_FillScreen(ILI9341_WHITE);
     ILI9341_WriteString(0, 0, "WHITE", Font_11x18, ILI9341_BLACK, ILI9341_WHITE);
-    HAL_Delay(500);
+    HAL_Delay(100);
 
     ILI9341_FillScreen(ILI9341_BLUE);
     ILI9341_WriteString(0, 0, "BLUE", Font_11x18, ILI9341_BLACK, ILI9341_BLUE);
-    HAL_Delay(500);
+    HAL_Delay(100);
 
     ILI9341_FillScreen(ILI9341_RED);
     ILI9341_WriteString(0, 0, "RED", Font_11x18, ILI9341_BLACK, ILI9341_RED);
-    HAL_Delay(500);
+    HAL_Delay(100);
 
     ILI9341_FillScreen(ILI9341_GREEN);
     ILI9341_WriteString(0, 0, "GREEN", Font_11x18, ILI9341_BLACK, ILI9341_GREEN);
-    HAL_Delay(500);
+    HAL_Delay(100);
 
     ILI9341_FillScreen(ILI9341_CYAN);
     ILI9341_WriteString(0, 0, "CYAN", Font_11x18, ILI9341_BLACK, ILI9341_CYAN);
-    HAL_Delay(500);
+    HAL_Delay(100);
 
     ILI9341_FillScreen(ILI9341_MAGENTA);
     ILI9341_WriteString(0, 0, "MAGENTA", Font_11x18, ILI9341_BLACK, ILI9341_MAGENTA);
-    HAL_Delay(500);
+    HAL_Delay(100);
 
     ILI9341_FillScreen(ILI9341_YELLOW);
     ILI9341_WriteString(0, 0, "YELLOW", Font_11x18, ILI9341_BLACK, ILI9341_YELLOW);
-    HAL_Delay(500);
+    HAL_Delay(100);
 
     ILI9341_FillScreen(ILI9341_BLACK);
     ILI9341_WriteString(0, 0, "BLACK", Font_11x18, ILI9341_WHITE, ILI9341_BLACK);
-    HAL_Delay(500);
+    HAL_Delay(100);
 
-    ILI9341_DrawImage((ILI9341_WIDTH - 240) / 2, (ILI9341_HEIGHT - 240) / 2, 240, 240, (const uint16_t*)test_img_240x240);
+    ILI9341_DrawImage((ILI9341_WIDTH - 240) / 2, (ILI9341_HEIGHT - 240) / 2, 240, 240, (const uint16_t*) test_img0_240x240);
 
-    HAL_Delay(3000);
-
-    ILI9341_FillScreen(ILI9341_BLACK);
-    ILI9341_WriteString(0, 0, "Touchpad test.  Draw something!", Font_11x18, ILI9341_WHITE, ILI9341_BLACK);
     HAL_Delay(1000);
-    ILI9341_FillScreen(ILI9341_BLACK);
 
-  //  if(HAL_SPI_DeInit(&hspi1) != HAL_OK) {
-  //      UART_Printf("HAL_SPI_DeInit failed!\r\n");
-   //     return;
-   // }
+   // ILI9341_FillScreen(ILI9341_BLACK);
+   // ILI9341_WriteString(0, 0, "Touchpad test.  Draw something!", Font_11x18, ILI9341_WHITE, ILI9341_BLACK);
+   // HAL_Delay(1000);
+   // ILI9341_FillScreen(ILI9341_BLACK);
 
-   // hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
 
-  //  if(HAL_SPI_Init(&hspi1) != HAL_OK) {
-    //    UART_Printf("HAL_SPI_Init failed!\r\n");
-    //    return;
-   // }
 
-    int npoints = 0;
-    while(npoints < 1000) {
-        uint16_t x, y;
 
-        if(ILI9341_TouchGetCoordinates(&x, &y)) {
-            ILI9341_DrawPixel(x, 320-y, ILI9341_WHITE);
-            npoints++;
-        }
-    }
 }
 /* USER CODE END 0 */
 
@@ -228,38 +201,109 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM4_Init();
-  MX_SPI2_Init();
-  MX_SPI1_Init();
   MX_USB_DEVICE_Init();
+  MX_SPI1_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
-
-  init();
+  ILI9341_ALL_Init();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  //HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
-  //char buf[25];
-  //uint8_t buf[]="test";
-  //int32_t capture=0, capture_prev=0, encoder=0;
+  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
+  char buf[25];
+  uint8_t buftft[45];
+  uint8_t freqstr[100];
+
+  uint8_t setingstft[45];
+  uint8_t mod[3]="LSB";
+  uint8_t bwt=3;
+  uint8_t band=0;
+  double freq,a0,a1,a2,a3;
+  int32_t capture=0, capture_prev=0, encoder=0;
+  ILI9341_FillScreen(ILI9341_BLACK);
   while (1)
   {
- // capture = TIM4->CNT;
- // encoder += capture - capture_prev;
- // if (abs(capture-capture_prev)>32767) {
-//	encoder += (capture<capture_prev ? 65535 : -65535);
-  //  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+  capture = TIM4->CNT;
+  encoder += capture - capture_prev;
+  if (abs(capture-capture_prev)>32767) {
+	  encoder += (capture<capture_prev ? 65535 : -65535);
+  }
+    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
   //}
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-  //capture_prev = capture;
-  // sprintf(buf,"count: [%ld]\n", encoder);
-   //CDC_Transmit_FS((uint8_t *)buf, strlen(buf));
+   capture_prev = capture;
+   sprintf(buf,"count: [%ld]\n", encoder);
+   freq=(encoder*(400.0/ 65535))*10;
+   freq=(140000.0+freq)/10000.0;
+
+   sprintf(buftft,"FREQ : %.3lf KHZ",freq);
+   //ILI9341_FillScreen(ILI9341_BLACK);
+   //ILI9341_WriteString(0, 0, &buf, Font_11x18, ILI9341_WHITE, ILI9341_BLACK);
+   ILI9341_WriteString(0, 0,"[MENU] [MOD] [BAND]" , Font_16x26, ILI9341_CYAN, ILI9341_BLACK);
+   for (int i=0 ; i<320;i++){
+   ILI9341_DrawPixel(i,95, ILI9341_WHITE);
+   ILI9341_DrawPixel(i,96, ILI9341_WHITE);
+   ILI9341_DrawPixel(i,97, ILI9341_WHITE);
+   }
+   if (freq >= 14.000 && freq <= 14.350){
+       band=20;
+   }else if(freq >= 7.000 && freq <= 7.200){
+	   band=40;
+   }else if(freq >= 3.500 && freq <= 3.800){
+	   band=80;
+   }else if (freq >= 3.500 && freq <= 3.800){
+	   band=160;
+   }else{
+	   band=0;
+   }
+
+   sprintf(setingstft,"BAND:%dM MOD:%c BANDWT:%dK",band,mod,bwt);
+   ILI9341_WriteString(0, 35,setingstft , Font_11x18, ILI9341_YELLOW, ILI9341_BLACK);
+   ILI9341_WriteString(0, 65,&buftft , Font_16x26, ILI9341_WHITE, ILI9341_BLACK);
+   for (int i=103; i<195; i++){
+	   ILI9341_DrawPixel(160,i, ILI9341_RED);
+	   ILI9341_DrawPixel(160,i, ILI9341_RED);
+
+   }
+   ILI9341_WriteString(0, 103,"-0db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
+   ILI9341_WriteString(0, 133,"-50db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
+   ILI9341_WriteString(0, 163,"-90db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
+   a0=freq-0.500;
+   a1=freq-0.250;
+   a2=freq+0.250;
+   a3=freq+0.500;
+
+   sprintf(freqstr,"  %.3lf  %.3lf  %.3lf  %.3lf  %.3lf",a0,a1,freq,a2,a3);
+   ILI9341_WriteString(10, 200,freqstr , Font_7x10, ILI9341_GREEN, ILI9341_BLACK);
+   for (int i=0 ; i<320;i++){
+      ILI9341_DrawPixel(i,211, ILI9341_WHITE);
+      ILI9341_DrawPixel(i,212, ILI9341_WHITE);
+      ILI9341_DrawPixel(i,213, ILI9341_WHITE);
+      }
+
+   ILI9341_WriteString(0, 220,"SWR: 1.3   SNR: 8   PWR:45W" , Font_11x18, ILI9341_YELLOW, ILI9341_BLACK);
+   HAL_Delay(10);
+   CDC_Transmit_FS((uint8_t *)buf, strlen(buf));
+   memset(&buftft,0,35);
+
    //HAL_Delay(100);
   //}
-	  loop();
+	   /* uint8_t buf[35];
+	 	uint16_t touchdatax, touchdatay;
+	 	  touchdatax=ILI9341_TouchGetX();
+	 	  HAL_Delay(10);
+	 	  touchdatay=ILI9341_TouchGetY();
+	 	sprintf(buf,"x: [%ld], y: [%ld]\n",touchdatax,touchdatay);
+	 	CDC_Transmit_FS((uint16_t *)buf, strlen(buf));
+	 	  HAL_Delay(250);
+	 	touchdatax=touchdatay=0;*/
+
+	  //loop();
+
   }
   /* USER CODE END 3 */
 
@@ -433,31 +477,28 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13|GPIO_PIN_4, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PC13 PC4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_4;
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA3 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  /*Configure GPIO pin : PC4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PC5 */
   GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -475,9 +516,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
+
 
 /* USER CODE END 4 */
 

@@ -30,10 +30,17 @@ Src/main.o: ../Src/main.c \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/usb_device.h \
  /Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/usbd_conf.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Inc/usbd_cdc_if.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Inc/testimg.h \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/lcd-tft.h \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h \
- /Users/danilbogdanov/work/sources-sdr/sdr/Inc/testimg.h \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/touchscreen.h
 
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/main.h:
@@ -98,12 +105,26 @@ Src/main.o: ../Src/main.c \
 
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/usbd_conf.h:
 
+/Users/danilbogdanov/work/sources-sdr/sdr/Inc/usbd_cdc_if.h:
+
+/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h:
+
+/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
+
+/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
+
+/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
+
+/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
+
+/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
+
+/Users/danilbogdanov/work/sources-sdr/sdr/Inc/testimg.h:
+
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h:
 
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/lcd-tft.h:
 
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h:
-
-/Users/danilbogdanov/work/sources-sdr/sdr/Inc/testimg.h:
 
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/touchscreen.h:

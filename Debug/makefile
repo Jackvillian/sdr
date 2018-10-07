@@ -36,7 +36,7 @@ all: sdr.elf
 sdr.elf: $(OBJS) $(USER_OBJS) ../STM32F103VETx_FLASH.ld
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU GCC Linker'
-	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103VETx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "sdr.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
+	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -u_printf_float -T"../STM32F103VETx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "sdr.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build

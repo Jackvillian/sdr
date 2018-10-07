@@ -41,7 +41,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_FS;
-extern SPI_HandleTypeDef hspi2;
+extern TIM_HandleTypeDef htim4;
 
 /******************************************************************************/
 /*            Cortex-M3 Processor Interruption and Exception Handlers         */ 
@@ -209,17 +209,33 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 }
 
 /**
-* @brief This function handles SPI2 global interrupt.
+* @brief This function handles EXTI line[9:5] interrupts.
 */
-void SPI2_IRQHandler(void)
+void EXTI9_5_IRQHandler(void)
 {
-  /* USER CODE BEGIN SPI2_IRQn 0 */
+  /* USER CODE BEGIN EXTI9_5_IRQn 0 */
+	// if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_5)){
 
-  /* USER CODE END SPI2_IRQn 0 */
-  HAL_SPI_IRQHandler(&hspi2);
-  /* USER CODE BEGIN SPI2_IRQn 1 */
+	  //	}
+  /* USER CODE END EXTI9_5_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
+  /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
-  /* USER CODE END SPI2_IRQn 1 */
+  /* USER CODE END EXTI9_5_IRQn 1 */
+}
+
+/**
+* @brief This function handles TIM4 global interrupt.
+*/
+void TIM4_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM4_IRQn 0 */
+
+  /* USER CODE END TIM4_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim4);
+  /* USER CODE BEGIN TIM4_IRQn 1 */
+
+  /* USER CODE END TIM4_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
