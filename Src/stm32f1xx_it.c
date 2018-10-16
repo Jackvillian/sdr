@@ -36,7 +36,7 @@
 #include "stm32f1xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+extern int bt;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -214,11 +214,13 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 void EXTI9_5_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
-	// if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_5)){
+	 if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_5)){
+        bt++;
+	  	}
 
-	  //	}
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
   /* USER CODE END EXTI9_5_IRQn 1 */

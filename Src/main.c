@@ -59,6 +59,7 @@
 #include "font.h"
 #include "lcd-tft.h"
 #include "touchscreen.h"
+#include "ui.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -69,7 +70,9 @@ TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+volatile int bt=0;
+char menu_bt;
+int last_menu_bt=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -159,10 +162,10 @@ void loop() {
 
     HAL_Delay(1000);
 
-   // ILI9341_FillScreen(ILI9341_BLACK);
-   // ILI9341_WriteString(0, 0, "Touchpad test.  Draw something!", Font_11x18, ILI9341_WHITE, ILI9341_BLACK);
-   // HAL_Delay(1000);
-   // ILI9341_FillScreen(ILI9341_BLACK);
+    ILI9341_FillScreen(ILI9341_BLACK);
+    ILI9341_WriteString(0, 0, "Touchpad test.  Draw something!", Font_11x18, ILI9341_WHITE, ILI9341_BLACK);
+    HAL_Delay(1000);
+    ILI9341_FillScreen(ILI9341_BLACK);
 
 
 
@@ -212,15 +215,16 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
-  char buf[25];
-  uint8_t buftft[45];
-  uint8_t freqstr[100];
-
-  uint8_t setingstft[45];
-  uint8_t mod[3]="LSB";
-  uint8_t bwt=3;
+  uint8_t mod[]="LSB";
+  double bwt=3.0;
+  double swr=1.3;
+  uint8_t snr=9;
+  uint8_t power=45;
   uint8_t band=0;
-  double freq,a0,a1,a2,a3;
+  bool bandrfq=1;
+  double freq;
+
+
   int32_t capture=0, capture_prev=0, encoder=0;
   ILI9341_FillScreen(ILI9341_BLACK);
   while (1)
@@ -236,73 +240,45 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
    capture_prev = capture;
-   sprintf(buf,"count: [%ld]\n", encoder);
    freq=(encoder*(400.0/ 65535))*10;
-   freq=(140000.0+freq)/10000.0;
+   freq=(1000.0+freq)/10000.0;
+   if (bandrfq==true){
 
-   sprintf(buftft,"FREQ : %.3lf KHZ",freq);
-   //ILI9341_FillScreen(ILI9341_BLACK);
-   //ILI9341_WriteString(0, 0, &buf, Font_11x18, ILI9341_WHITE, ILI9341_BLACK);
-   ILI9341_WriteString(0, 0,"[MENU] [MOD] [BAND]" , Font_16x26, ILI9341_CYAN, ILI9341_BLACK);
-   for (int i=0 ; i<320;i++){
-   ILI9341_DrawPixel(i,95, ILI9341_WHITE);
-   ILI9341_DrawPixel(i,96, ILI9341_WHITE);
-   ILI9341_DrawPixel(i,97, ILI9341_WHITE);
+   if ((freq >= 14.000 || freq <= 14.350) && freq >= 7.200){
+   	       band=20;
+   	       freq=freq+13.0;
    }
-   if (freq >= 14.000 && freq <= 14.350){
-       band=20;
-   }else if(freq >= 7.000 && freq <= 7.200){
-	   band=40;
-   }else if(freq >= 3.500 && freq <= 3.800){
-	   band=80;
-   }else if (freq >= 3.500 && freq <= 3.800){
-	   band=160;
-   }else{
-	   band=0;
+   if((freq >= 7.000 || freq <= 7.200)&& freq >= 3.800){
+   		   band=40;
+   		   freq=freq+7.0;
    }
+   if(freq >= 3.500 || freq <= 3.800){
+   		   band=80;
+   		   freq=freq+3.5;
 
-   sprintf(setingstft,"BAND:%dM MOD:%c BANDWT:%dK",band,mod,bwt);
-   ILI9341_WriteString(0, 35,setingstft , Font_11x18, ILI9341_YELLOW, ILI9341_BLACK);
-   ILI9341_WriteString(0, 65,&buftft , Font_16x26, ILI9341_WHITE, ILI9341_BLACK);
-   for (int i=103; i<195; i++){
-	   ILI9341_DrawPixel(160,i, ILI9341_RED);
-	   ILI9341_DrawPixel(160,i, ILI9341_RED);
 
-   }
-   ILI9341_WriteString(0, 103,"-0db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
-   ILI9341_WriteString(0, 133,"-50db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
-   ILI9341_WriteString(0, 163,"-90db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
-   a0=freq-0.500;
-   a1=freq-0.250;
-   a2=freq+0.250;
-   a3=freq+0.500;
+   }}
+   if (bandrfq==false){
 
-   sprintf(freqstr,"  %.3lf  %.3lf  %.3lf  %.3lf  %.3lf",a0,a1,freq,a2,a3);
-   ILI9341_WriteString(10, 200,freqstr , Font_7x10, ILI9341_GREEN, ILI9341_BLACK);
-   for (int i=0 ; i<320;i++){
-      ILI9341_DrawPixel(i,211, ILI9341_WHITE);
-      ILI9341_DrawPixel(i,212, ILI9341_WHITE);
-      ILI9341_DrawPixel(i,213, ILI9341_WHITE);
+      if (freq >= 14.000 && freq <= 14.350){
+      	       band=20;
+      	       freq=freq+13.0;
       }
+      if(freq >= 7.000 && freq <= 7.200){
+      		   band=40;
+      		   freq=freq+7.0;
+      }
+      if(freq >= 3.500 && freq <= 3.800){
+      		   band=80;
+      		   freq=freq+3.5;
 
-   ILI9341_WriteString(0, 220,"SWR: 1.3   SNR: 8   PWR:45W" , Font_11x18, ILI9341_YELLOW, ILI9341_BLACK);
-   HAL_Delay(10);
-   CDC_Transmit_FS((uint8_t *)buf, strlen(buf));
-   memset(&buftft,0,35);
 
-   //HAL_Delay(100);
-  //}
-	   /* uint8_t buf[35];
-	 	uint16_t touchdatax, touchdatay;
-	 	  touchdatax=ILI9341_TouchGetX();
-	 	  HAL_Delay(10);
-	 	  touchdatay=ILI9341_TouchGetY();
-	 	sprintf(buf,"x: [%ld], y: [%ld]\n",touchdatax,touchdatay);
-	 	CDC_Transmit_FS((uint16_t *)buf, strlen(buf));
-	 	  HAL_Delay(250);
-	 	touchdatax=touchdatay=0;*/
+      }}
+   UI_MAIN_SCREEN(band,mod,bwt,freq,swr,snr,power);
 
-	  //loop();
+   if (bt > 3){
+	   bt=0;
+   }
 
   }
   /* USER CODE END 3 */
@@ -498,7 +474,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PC5 */
   GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -515,6 +491,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC6 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);

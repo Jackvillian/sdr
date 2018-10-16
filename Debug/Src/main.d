@@ -41,7 +41,8 @@ Src/main.o: ../Src/main.c \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/lcd-tft.h \
  /Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h \
- /Users/danilbogdanov/work/sources-sdr/sdr/Inc/touchscreen.h
+ /Users/danilbogdanov/work/sources-sdr/sdr/Inc/touchscreen.h \
+ /Users/danilbogdanov/work/sources-sdr/sdr/Inc/ui.h
 
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/main.h:
 
@@ -128,3 +129,5 @@ Src/main.o: ../Src/main.c \
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h:
 
 /Users/danilbogdanov/work/sources-sdr/sdr/Inc/touchscreen.h:
+
+/Users/danilbogdanov/work/sources-sdr/sdr/Inc/ui.h:

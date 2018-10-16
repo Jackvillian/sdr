@@ -18,7 +18,7 @@ void ILI9341_Unselect() {
 
 static void ILI9341_Reset() {
     HAL_GPIO_WritePin(TFT_RESET_PORT, TFT_RESET_PIN, GPIO_PIN_RESET);
-    HAL_Delay(5);
+    HAL_Delay(1);
     HAL_GPIO_WritePin(TFT_RESET_PORT, TFT_RESET_PIN, GPIO_PIN_SET);
 }
 static void ILI9341_WriteCommand(uint8_t cmd) {
@@ -62,7 +62,7 @@ void ILI9341_Init() {
 
     // SOFTWARE RESET
     ILI9341_WriteCommand(0x01);
-    HAL_Delay(1000);
+    HAL_Delay(200);
 
     // POWER CONTROL A
     ILI9341_WriteCommand(0xCB);
@@ -194,7 +194,7 @@ void ILI9341_Init() {
 
     // EXIT SLEEP
     ILI9341_WriteCommand(0x11);
-    HAL_Delay(120);
+    HAL_Delay(20);
 
     // TURN ON DISPLAY
     ILI9341_WriteCommand(0x29);
