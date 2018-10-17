@@ -5,10 +5,12 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Src/font.c \
+../Src/grid.c \
 ../Src/lcd-tft.c \
 ../Src/main.c \
 ../Src/stm32f1xx_hal_msp.c \
 ../Src/stm32f1xx_it.c \
+../Src/swr_meter.c \
 ../Src/system_stm32f1xx.c \
 ../Src/touchscreen.c \
 ../Src/ui.c \
@@ -19,10 +21,12 @@ C_SRCS += \
 
 OBJS += \
 ./Src/font.o \
+./Src/grid.o \
 ./Src/lcd-tft.o \
 ./Src/main.o \
 ./Src/stm32f1xx_hal_msp.o \
 ./Src/stm32f1xx_it.o \
+./Src/swr_meter.o \
 ./Src/system_stm32f1xx.o \
 ./Src/touchscreen.o \
 ./Src/ui.o \
@@ -33,10 +37,12 @@ OBJS += \
 
 C_DEPS += \
 ./Src/font.d \
+./Src/grid.d \
 ./Src/lcd-tft.d \
 ./Src/main.d \
 ./Src/stm32f1xx_hal_msp.d \
 ./Src/stm32f1xx_it.d \
+./Src/swr_meter.d \
 ./Src/system_stm32f1xx.d \
 ./Src/touchscreen.d \
 ./Src/ui.d \
@@ -51,7 +57,7 @@ Src/%.o: ../Src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed="__attribute__((__packed__))"' -DUSE_HAL_DRIVER -DSTM32F103xE -I"/Users/danilbogdanov/work/sources-sdr/sdr/Inc" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Drivers/STM32F1xx_HAL_Driver/Inc" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Drivers/CMSIS/Include" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed="__attribute__((__packed__))"' -DUSE_HAL_DRIVER -DSTM32F103xE -I"/Users/danilbogdanov/work/sdr/Inc" -I"/Users/danilbogdanov/work/sdr/Drivers/STM32F1xx_HAL_Driver/Inc" -I"/Users/danilbogdanov/work/sdr/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"/Users/danilbogdanov/work/sdr/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"/Users/danilbogdanov/work/sdr/Drivers/CMSIS/Include" -I"/Users/danilbogdanov/work/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc" -I"/Users/danilbogdanov/work/sdr/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

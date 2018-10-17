@@ -8,8 +8,6 @@
 #include "touchscreen.h"
 #include "font.h"
 #include "lcd-tft.h"
-uint8_t band=0;
-uint8_t bwt=3;
 uint8_t midline[45];
 uint8_t freqline[45];
 uint8_t graphline[100];

@@ -60,9 +60,13 @@
 #include "lcd-tft.h"
 #include "touchscreen.h"
 #include "ui.h"
+#include "grid.h"
+#include "swr_meter.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc1;
+
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 
@@ -73,6 +77,14 @@ TIM_HandleTypeDef htim4;
 volatile int bt=0;
 char menu_bt;
 int last_menu_bt=0;
+uint8_t mod[]="LSB";
+double bwt=3.0;
+double swr=1.3;
+uint8_t snr=9;
+uint8_t power=45;
+volatile uint8_t band=0;
+bool bandrfq=1;
+double freq;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -81,6 +93,7 @@ static void MX_GPIO_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI2_Init(void);
+static void MX_ADC1_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -207,6 +220,7 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
   ILI9341_ALL_Init();
 
@@ -215,16 +229,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
-  uint8_t mod[]="LSB";
-  double bwt=3.0;
-  double swr=1.3;
-  uint8_t snr=9;
-  uint8_t power=45;
-  uint8_t band=0;
-  bool bandrfq=1;
-  double freq;
-
-
   int32_t capture=0, capture_prev=0, encoder=0;
   ILI9341_FillScreen(ILI9341_BLACK);
   while (1)
@@ -242,43 +246,22 @@ int main(void)
    capture_prev = capture;
    freq=(encoder*(400.0/ 65535))*10;
    freq=(1000.0+freq)/10000.0;
-   if (bandrfq==true){
-
-   if ((freq >= 14.000 || freq <= 14.350) && freq >= 7.200){
-   	       band=20;
-   	       freq=freq+13.0;
-   }
-   if((freq >= 7.000 || freq <= 7.200)&& freq >= 3.800){
-   		   band=40;
-   		   freq=freq+7.0;
-   }
-   if(freq >= 3.500 || freq <= 3.800){
-   		   band=80;
-   		   freq=freq+3.5;
-
-
-   }}
-   if (bandrfq==false){
-
-      if (freq >= 14.000 && freq <= 14.350){
-      	       band=20;
-      	       freq=freq+13.0;
-      }
-      if(freq >= 7.000 && freq <= 7.200){
-      		   band=40;
-      		   freq=freq+7.0;
-      }
-      if(freq >= 3.500 && freq <= 3.800){
-      		   band=80;
-      		   freq=freq+3.5;
-
-
-      }}
-   UI_MAIN_SCREEN(band,mod,bwt,freq,swr,snr,power);
+   switch(bt){
+		case '0':
+        UI_MAIN_SCREEN(band,mod,bwt,bandshift(freq,bandrfq),swr,snr,power);
+        break;
+		case '1':
+	    UI_MENU_SCREEN(0,0,0,0);
+		case '2':
+		UI_MODULATION_SCREEN(0,0,0,0);
+		case '3':
+	    UI_BAND_SCREEN(0,0,0,0);
+        }
 
    if (bt > 3){
-	   bt=0;
+       bt=0;
    }
+
 
   }
   /* USER CODE END 3 */
@@ -324,7 +307,8 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_USB;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
   PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -345,6 +329,38 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+}
+
+/* ADC1 init function */
+static void MX_ADC1_Init(void)
+{
+
+  ADC_ChannelConfTypeDef sConfig;
+
+    /**Common config 
+    */
+  hadc1.Instance = ADC1;
+  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc1.Init.NbrOfConversion = 1;
+  if (HAL_ADC_Init(&hadc1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_0;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
 }
 
 /* SPI1 init function */
