@@ -41,6 +41,7 @@ extern int bt;
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_FS;
+extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim4;
 
 /******************************************************************************/
@@ -214,9 +215,14 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 void EXTI9_5_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
-	 if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_5)){
+	 //if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_5)!=RESET){
+
+	   if (EXTI->PR &(1<<5)){
         bt++;
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+
 	  	}
+
 
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
@@ -238,6 +244,20 @@ void TIM4_IRQHandler(void)
   /* USER CODE BEGIN TIM4_IRQn 1 */
 
   /* USER CODE END TIM4_IRQn 1 */
+}
+
+/**
+* @brief This function handles SPI2 global interrupt.
+*/
+void SPI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI2_IRQn 0 */
+
+  /* USER CODE END SPI2_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi2);
+  /* USER CODE BEGIN SPI2_IRQn 1 */
+
+  /* USER CODE END SPI2_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

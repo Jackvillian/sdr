@@ -21,6 +21,6 @@
 #define M20STOP  14.350
 #define M20STEP  2.9
 
-double bandshift(double freq, bool bandrfq);
+uint8_t bandshift(double freq);
 
 #endif /* GRID_H_ */

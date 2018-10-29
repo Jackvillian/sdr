@@ -21,24 +21,10 @@ uint8_t last_sel;
 	ILI9341_FillScreen(ILI9341_BLACK);
 	last_sel=selector0;
 	}
-switch(selector0) {
-	case 1:
-
-        break;
-	case 2:
-
-		break;
-	case 3:
-
-	    break;
-
-	default:
-}
-
-}*/
+*/
 
 
-void UI_MAIN_SCREEN(uint8_t band,uint8_t mod[] , double bwt,double freq,float swr, uint8_t snr, uint8_t pwr){
+void UI_MAIN_SCREEN(uint8_t band,uint8_t mod[] , double bwt,double freq,float swr, uint8_t snr, float pwr){
 	ILI9341_WriteString(0, 0,"[MENU] [MOD] [BAND]" , Font_16x26, ILI9341_CYAN, ILI9341_BLACK);
 	for (int i=0 ; i<320;i++){
 	   ILI9341_DrawPixel(i,95, ILI9341_WHITE);
@@ -124,9 +110,9 @@ void UI_MENU_SCREEN(uint8_t encoder0,uint8_t encoder1,uint8_t bt0,uint8_t bt2){
 	}
 }
 
-void UI_FOOTER(uint8_t swr, uint8_t snr, uint8_t pwr){
-	sprintf(footerline,"SWR: %.1lf SNR: %d  PWR: %dW",swr,snr,pwr);
-	ILI9341_WriteString(0, 220,"SWR: 1.3   SNR: 8   PWR: 45W" , Font_11x18, ILI9341_YELLOW, ILI9341_BLACK);
+void UI_FOOTER(float swr, uint8_t snr, float pwr){
+	sprintf(footerline,"SWR: %.lf SNR: %d  PWR: %.lf",swr,snr,pwr);
+	ILI9341_WriteString(0, 220,footerline , Font_11x18, ILI9341_YELLOW, ILI9341_BLACK);
 }
 
 void UI_GRAPH(uint8_t amp, uint8_t freq_band, double freq){
@@ -141,7 +127,7 @@ void UI_GRAPH(uint8_t amp, uint8_t freq_band, double freq){
 	   a0=freq-0.500;
 	   a2=freq+0.500;
 
-	   sprintf(graphline,"  %.3lf           %.3lf         %.3lf",a0,a1,a2);
+	   sprintf(graphline,"  %.3lf           %.3lf         %.3lf",a0,freq,a2);
 	   ILI9341_WriteString(10, 200,&graphline , Font_7x10, ILI9341_GREEN, ILI9341_BLACK);
 	   for (int i=0 ; i<320;i++){
 	      ILI9341_DrawPixel(i,211, ILI9341_WHITE);
