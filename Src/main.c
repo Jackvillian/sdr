@@ -65,12 +65,16 @@
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
+SPI_HandleTypeDef hspi3;
 
+TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 volatile int bt=0;
+volatile uint32_t touchX;
+volatile uint32_t touchY;
 char menu_bt;
 int last_menu_bt=0;
 /* USER CODE END PV */
@@ -81,6 +85,8 @@ static void MX_GPIO_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI2_Init(void);
+static void MX_TIM3_Init(void);
+static void MX_SPI3_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -91,9 +97,9 @@ static void MX_SPI2_Init(void);
 void ILI9341_ALL_Init() {
      ILI9341_Unselect();
      ILI9341_Init();
-     //ILI9341_TouchSelect();
-     //ILI9341_TouchInit();
-     //ILI9341_TouchUnselect();
+     ILI9341_TouchSelect();
+     ILI9341_TouchInit();
+     ILI9341_TouchUnselect();
  }
 void loop() {
 
@@ -207,6 +213,8 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
+  MX_TIM3_Init();
+  MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
   ILI9341_ALL_Init();
 
@@ -215,17 +223,51 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
+  HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   uint8_t mod[]="LSB";
   double bwt=3.0;
   double swr=1.3;
   uint8_t snr=9;
   uint8_t power=45;
   uint8_t band=0;
+  uint8_t frame=0;
+  uint8_t lastframe=0;
+  int last_bt=0;
+  uint8_t volume=5;
+  uint8_t lastvolume=0;
+  uint8_t bandselector=0;
   bool bandrfq=1;
   double freq;
+  uint8_t touchdebug[100];
+  uint8_t enc1debug[100];
+  uint8_t btdebug[50];
+  uint8_t touchcord=0;
+  enum states
+  {
+      initial = 0,
+      state_1,
+      state_final
+  };
 
-
+  enum signals
+  {
+      sign0,
+      sign1,
+      sign_N
+  };
+  enum states FSM_table[3][3] = {
+      [initial][sign0] = state_1,
+      [initial][sign1] = initial,
+      [initial][sign_N] = state_1,
+      [state_1][sign0] = initial,
+      [state_1][sign1] = state_1,
+      [state_1][sign_N] = state_final,
+      [state_final][sign0] = initial,
+      [state_final][sign1] = initial,
+      [state_final][sign_N] = initial
+  };
   int32_t capture=0, capture_prev=0, encoder=0;
+  int32_t capture1=0, capture_prev1=0, encoder1=0;
   ILI9341_FillScreen(ILI9341_BLACK);
   while (1)
   {
@@ -234,12 +276,19 @@ int main(void)
   if (abs(capture-capture_prev)>32767) {
 	  encoder += (capture<capture_prev ? 65535 : -65535);
   }
+  capture1 = TIM3->CNT;
+    encoder1 += capture1 - capture_prev1;
+    if (abs(capture1-capture_prev1)>32767) {
+  	  encoder1 += (capture1<capture_prev1 ? 65535 : -65535);
+  	  encoder1 = (encoder1-1);
+    }
     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
   //}
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
    capture_prev = capture;
+   capture_prev1 = capture1;
    freq=(encoder*(400.0/ 65535))*10;
    freq=(1000.0+freq)/10000.0;
    if (bandrfq==true){
@@ -274,10 +323,100 @@ int main(void)
 
 
       }}
-   UI_MAIN_SCREEN(band,mod,bwt,freq,swr,snr,power);
 
+   switch(bt){
+   case 0:
+	   bandselector=encoder1/2;
+	   if (bandselector ==1){
+		  band=160;
+	   }
+	   if (bandselector ==2){
+	   	  band=80;
+	   }
+	   if (bandselector ==3){
+	   	  band=40;
+	   }
+	   if (bandselector ==4){
+	   	  band=30;
+	   }
+	   if (bandselector ==5){
+	   	  band=20;
+	   }
+	   if (bandselector ==6){
+	   	   	  band=11;
+	   }
+	   if (bandselector > 6){
+		   bandselector=6;
+	   	  encoder1=12;
+	   }
+	   if (bandselector < 0){
+		   bandselector=0;
+	   	   encoder1=2;
+	   }
+	   break;
+
+   case 1:
+       frame=encoder1/2;
+       if (frame == 0){
+    	   uint8_t type[]="LSB";
+    	   memcpy(mod,type,strlen(type));
+       	   }
+       if (frame == 1){
+    	   uint8_t type[]="USB";
+    	   memcpy(mod,type,strlen(type));
+           }
+       if (frame == 2){
+    	   uint8_t type[]="A/M";
+    	   memcpy(mod,type,strlen(type));
+           }
+       if (frame == 3){
+    	   uint8_t type[]="F/M";
+    	   memcpy(mod,type,3);
+           }
+       if (frame > 3){
+    	   frame=3;
+       	   encoder1=6;
+       	   }
+       if (frame < 0){
+       	   frame=0;
+       	   encoder1=2;
+       	   }
+       	   break;
+   case 2:
+	   volume=encoder1/2;
+       if (volume >= 9){
+	   volume=9;
+	   encoder1=18;
+       }
+       if (volume <= 0){
+	   volume=0;
+	   encoder1=2;
+      }
+       lastvolume=encoder1;
+       break;
+   }
+
+   switch(touchcord){
+   case 0:
+     UI_MAIN_SCREEN(band,mod,volume,freq,swr,snr,power);
+     UI_DEBUG(touchX, touchY,encoder1/2 , bt, 0, 0,0,0 );
+     break;
+   case 1:
+	   UI_MENU_SCREEN(0,0,0,0);
+	   break;
+   case 2:
+	 UI_MODULATION_SCREEN(0,0,0,0);
+	 break;
+   case 3:
+	 UI_BAND_SCREEN(0,0,0,0);
+	 break;
+   }
    if (bt > 3){
 	   bt=0;
+   }
+   if (bt != last_bt){
+	   last_bt=bt;
+	   //ILI9341_FillScreen(ILI9341_BLACK);
    }
 
   }
@@ -359,7 +498,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -389,6 +528,66 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi2.Init.CRCPolynomial = 10;
   if (HAL_SPI_Init(&hspi2) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* SPI3 init function */
+static void MX_SPI3_Init(void)
+{
+
+  /* SPI3 parameter configuration*/
+  hspi3.Instance = SPI3;
+  hspi3.Init.Mode = SPI_MODE_MASTER;
+  hspi3.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi3.Init.NSS = SPI_NSS_SOFT;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi3.Init.CRCPolynomial = 10;
+  if (HAL_SPI_Init(&hspi3) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* TIM3 init function */
+static void MX_TIM3_Init(void)
+{
+
+  TIM_Encoder_InitTypeDef sConfig;
+  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 0;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 65535;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI2;
+  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC1Filter = 0;
+  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC2Filter = 0;
+  if (HAL_TIM_Encoder_Init(&htim3, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -474,8 +673,8 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PC5 */
   GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PB12 */
@@ -492,10 +691,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC6 */
-  GPIO_InitStruct.Pin = GPIO_PIN_6;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  /*Configure GPIO pin : PC8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/

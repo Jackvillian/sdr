@@ -37,6 +37,8 @@
 
 /* USER CODE BEGIN 0 */
 extern int bt;
+extern uint32_t touchX;
+extern uint32_t touchY;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -214,13 +216,24 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 void EXTI9_5_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
-	 if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_5)){
+	 if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_8)){
+		 __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_8);
         bt++;
 	  	}
+	 if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_5)){
+		 __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_5);
+		 touchX=ILI9341_TouchGetX();
+		 touchY=ILI9341_TouchGetY();
+		 ILI9341_TouchSelect();
+		 ILI9341_TouchInit();
+		 ILI9341_TouchUnselect();
+
+
+	 	 }
 
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_8);
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
   /* USER CODE END EXTI9_5_IRQn 1 */

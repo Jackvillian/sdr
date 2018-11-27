@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Src/encoder.c \
 ../Src/font.c \
 ../Src/lcd-tft.c \
 ../Src/main.c \
@@ -18,6 +19,7 @@ C_SRCS += \
 ../Src/usbd_desc.c 
 
 OBJS += \
+./Src/encoder.o \
 ./Src/font.o \
 ./Src/lcd-tft.o \
 ./Src/main.o \
@@ -32,6 +34,7 @@ OBJS += \
 ./Src/usbd_desc.o 
 
 C_DEPS += \
+./Src/encoder.d \
 ./Src/font.d \
 ./Src/lcd-tft.d \
 ./Src/main.d \

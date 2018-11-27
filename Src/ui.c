@@ -14,6 +14,13 @@ uint8_t midline[45];
 uint8_t freqline[45];
 uint8_t graphline[100];
 uint8_t footerline[100];
+uint8_t touchdebug[100];
+uint8_t enc1debug[100];
+uint8_t btdebug0[20];
+uint8_t btdebug1[20];
+uint8_t btdebug2[20];
+uint8_t adcdebug0[20];
+uint8_t adcdebug1[20];
 uint8_t amp, freq_band;
 float a0,a1,a2;
 uint8_t last_sel;
@@ -40,7 +47,7 @@ switch(selector0) {
 }*/
 
 
-void UI_MAIN_SCREEN(uint8_t band,uint8_t mod[] , double bwt,double freq,float swr, uint8_t snr, uint8_t pwr){
+void UI_MAIN_SCREEN(uint8_t band,uint8_t mod[] , uint8_t vol,double freq,float swr, uint8_t snr, uint8_t pwr){
 	ILI9341_WriteString(0, 0,"[MENU] [MOD] [BAND]" , Font_16x26, ILI9341_CYAN, ILI9341_BLACK);
 	for (int i=0 ; i<320;i++){
 	   ILI9341_DrawPixel(i,95, ILI9341_WHITE);
@@ -48,7 +55,7 @@ void UI_MAIN_SCREEN(uint8_t band,uint8_t mod[] , double bwt,double freq,float sw
 	   ILI9341_DrawPixel(i,97, ILI9341_WHITE);
 	   }
 
-	   sprintf(midline,"BAND:%dM MOD:%c%c%c BANDWT:%0.1lfK",band,mod[0],mod[1],mod[2],bwt);
+	   sprintf(midline,"BAND:%dM MOD:%c%c%c VOLUME:%d",band,mod[0],mod[1],mod[2],vol);
 	   sprintf(freqline,"FREQ : %.3lf KHZ",freq);
 	   ILI9341_WriteString(0, 35,midline , Font_11x18, ILI9341_YELLOW, ILI9341_BLACK);
 	   ILI9341_WriteString(0, 65,&freqline , Font_16x26, ILI9341_WHITE, ILI9341_BLACK);
@@ -132,11 +139,11 @@ void UI_FOOTER(uint8_t swr, uint8_t snr, uint8_t pwr){
 }
 
 void UI_GRAPH(uint8_t amp, uint8_t freq_band, double freq){
-	for (int i=103; i<195; i++){
-		   ILI9341_DrawPixel(160,i, ILI9341_RED);
-		   ILI9341_DrawPixel(160,i, ILI9341_RED);
+	//for (int i=103; i<195; i++){
+	//	   ILI9341_DrawPixel(160,i, ILI9341_RED);
+	//	   ILI9341_DrawPixel(160,i, ILI9341_RED);
 
-	   }
+	//   }
 	   ILI9341_WriteString(0, 103,"-0db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
 	   ILI9341_WriteString(0, 133,"-50db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
 	   ILI9341_WriteString(0, 163,"-90db" , Font_7x10, ILI9341_BLUE, ILI9341_BLACK);
@@ -150,5 +157,23 @@ void UI_GRAPH(uint8_t amp, uint8_t freq_band, double freq){
 	      ILI9341_DrawPixel(i,212, ILI9341_WHITE);
 	      ILI9341_DrawPixel(i,213, ILI9341_WHITE);
 	      }
+}
+void UI_DEBUG(uint32_t touchX, uint32_t touchY, uint8_t enc , uint8_t bt0, uint8_t bt1, uint8_t bt2, uint8_t adc0,uint8_t adc1){
+	ILI9341_WriteString(50, 103,"DEBUG:" , Font_7x10, ILI9341_RED, ILI9341_BLACK);
+	sprintf(touchdebug,"touch X: %d Y: %d",touchX,touchY);
+	ILI9341_WriteString(50, 113,touchdebug , Font_7x10, ILI9341_YELLOW, ILI9341_BLACK);
+	sprintf(enc1debug,"encoder: %d",enc);
+	ILI9341_WriteString(50, 123,enc1debug , Font_7x10, ILI9341_YELLOW, ILI9341_BLACK);
+	sprintf(btdebug0,"bt_enc: %d",bt0);
+	ILI9341_WriteString(50, 133,btdebug0 , Font_7x10, ILI9341_YELLOW, ILI9341_BLACK);
+	sprintf(btdebug1,"bt0: %d",bt1);
+    ILI9341_WriteString(50, 143,btdebug1 , Font_7x10, ILI9341_YELLOW, ILI9341_BLACK);
+    sprintf(btdebug2,"bt1: %d",bt2);
+    ILI9341_WriteString(50, 153,btdebug2 , Font_7x10, ILI9341_YELLOW, ILI9341_BLACK);
+    sprintf(adcdebug0,"adc0: %d",adc0);
+    ILI9341_WriteString(50, 163,adcdebug0 , Font_7x10, ILI9341_YELLOW, ILI9341_BLACK);
+    sprintf(adcdebug1,"bt1: %d",adc1);
+    ILI9341_WriteString(50, 173,adcdebug1 , Font_7x10, ILI9341_YELLOW, ILI9341_BLACK);
+
 }
 
