@@ -19,7 +19,6 @@
 "Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.o"
 "Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.o"
 "Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.o"
-"Src/encoder.o"
 "Src/font.o"
 "Src/lcd-tft.o"
 "Src/main.o"
