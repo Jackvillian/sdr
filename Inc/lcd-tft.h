@@ -12,9 +12,9 @@
 #include <stdbool.h>
 
 #endif /* LCD_TFT_H_ */
-#define TFT_RESET_PIN GPIO_PIN_8
+#define TFT_RESET_PIN GPIO_PIN_9
 #define TFT_RESET_PORT GPIOD
-#define TFT_DC_PIN    GPIO_PIN_9
+#define TFT_DC_PIN    GPIO_PIN_8
 #define TFT_DC_PORT GPIOD
 #define TFT_CS_PIN    GPIO_PIN_12
 #define TFT_CS_PORT GPIOB
