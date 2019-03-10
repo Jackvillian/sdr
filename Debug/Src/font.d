@@ -1,4 +1,3 @@
-Src/font.o: ../Src/font.c \
- /Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h
+Src/font.o: ../Src/font.c /Users/jackv/work/sdr/Inc/font.h
 
-/Users/danilbogdanov/work/sources-sdr/sdr/Inc/font.h:
+/Users/jackv/work/sdr/Inc/font.h:

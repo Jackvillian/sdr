@@ -11,11 +11,7 @@ C_SRCS += \
 ../Src/stm32f1xx_it.c \
 ../Src/system_stm32f1xx.c \
 ../Src/touchscreen.c \
-../Src/ui.c \
-../Src/usb_device.c \
-../Src/usbd_cdc_if.c \
-../Src/usbd_conf.c \
-../Src/usbd_desc.c 
+../Src/ui.c 
 
 OBJS += \
 ./Src/font.o \
@@ -25,11 +21,7 @@ OBJS += \
 ./Src/stm32f1xx_it.o \
 ./Src/system_stm32f1xx.o \
 ./Src/touchscreen.o \
-./Src/ui.o \
-./Src/usb_device.o \
-./Src/usbd_cdc_if.o \
-./Src/usbd_conf.o \
-./Src/usbd_desc.o 
+./Src/ui.o 
 
 C_DEPS += \
 ./Src/font.d \
@@ -39,11 +31,7 @@ C_DEPS += \
 ./Src/stm32f1xx_it.d \
 ./Src/system_stm32f1xx.d \
 ./Src/touchscreen.d \
-./Src/ui.d \
-./Src/usb_device.d \
-./Src/usbd_cdc_if.d \
-./Src/usbd_conf.d \
-./Src/usbd_desc.d 
+./Src/ui.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -51,7 +39,7 @@ Src/%.o: ../Src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed="__attribute__((__packed__))"' -DUSE_HAL_DRIVER -DSTM32F103xE -I"/Users/danilbogdanov/work/sources-sdr/sdr/Inc" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Drivers/STM32F1xx_HAL_Driver/Inc" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Drivers/CMSIS/Include" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Core/Inc" -I"/Users/danilbogdanov/work/sources-sdr/sdr/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed="__attribute__((__packed__))"' -DUSE_HAL_DRIVER -DSTM32F103xE -I"/Users/jackv/work/sdr/Inc" -I"/Users/jackv/work/sdr/Drivers/STM32F1xx_HAL_Driver/Inc" -I"/Users/jackv/work/sdr/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"/Users/jackv/work/sdr/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"/Users/jackv/work/sdr/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
